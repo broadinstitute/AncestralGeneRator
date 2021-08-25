@@ -107,7 +107,7 @@ def reformat_tree(phylo_tree, parsed_results, outdir):
         for i, line in enumerate(opr):
             line = line.rstrip('\n')
             ls = line.split('\t')
-            if i > 0:
+            if i > 0 and ls[1] != 'none':
                 child_to_parent[ls[0]] = ls[1]
 
     t = Tree(phylo_tree)
