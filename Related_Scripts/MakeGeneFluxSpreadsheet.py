@@ -57,7 +57,39 @@ for samp in parent_mapping:
     samp_name = samp
     if samp in node_names.keys():
         samp_name = node_names[samp]
-    if not parent == 'none':
+    if parent == 'none':
+        samp_data = sample_data[samp]
+        allgcs = set([])
+        out_all = open(outdir + samp_name + '_all_clusters.txt', 'w')
+
+        num_tot_genes = 0
+        num_uniq_clusts = 0
+        for i in range(0, len(samp_data)):
+            sam_val = int(samp_data[i])
+            num_tot_genes += sam_val
+            if sam_val > 0:
+                num_uniq_clusts += 1
+                allgcs.add(ortholog_names[i] + ':' + str(sam_val))
+                out_all.write(ortholog_names[i] + '\t' + str(sam_val) + '\n')
+        out_all.close()
+        print('\t'.join([samp_name,
+                         parent,
+                         str(num_tot_genes),
+                         str(num_uniq_clusts),
+                         '0',
+                         '0',
+                         '0',
+                         '0',
+                         '0',
+                         '0',
+                         '0',
+                         '0',
+                         ','.join(sorted(allgcs)),
+                         '',
+                         '',
+                         '',
+                         '']))
+    else:
         samp_data = sample_data[samp]
         parent_data = sample_data[parent]
 
@@ -103,6 +135,7 @@ for samp in parent_mapping:
                 genes_duplicated += abs(par_val-sam_val)
                 duplicated[ortholog_names[i]] = abs(par_val - sam_val)
                 out_dups.write(ortholog_names[i] + '\t' + str(abs(par_val - sam_val)) + '\n')
+        out_all.close();
         out_gain.close();
         out_lost.close();
         out_reds.close();
@@ -120,12 +153,13 @@ for samp in parent_mapping:
                          str(genes_gained),
                          str(len(lost)),
                          str(genes_lost),
-                         str(len(dups)),
+                         str(len(duplicated)),
                          str(genes_duplicated),
-                         str(len(reds)),
+                         str(len(reduced)),
                          str(genes_reduced),
                          ','.join(sorted(allgcs)),
                          ','.join(sorted(gains)),
                          ','.join(sorted(losses)),
                          ','.join(sorted(dups)),
                          ','.join(sorted(reds))]))
+
